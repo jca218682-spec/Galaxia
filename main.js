@@ -1,148 +1,490 @@
 import * as THREE from 'https://unpkg.com/three@0.160.0/build/three.module.js';
 
+
+// ===============================
+// ESCENA
+// ===============================
+
 const scene = new THREE.Scene();
 
 const camera = new THREE.PerspectiveCamera(
-    75,
+    60,
     window.innerWidth / window.innerHeight,
     0.1,
-    1000
+    2000
 );
 
-camera.position.z = 18;
-camera.position.y = 6;
+camera.position.set(0, 7, 20);
 camera.lookAt(0, 0, 0);
 
+
+// ===============================
+// RENDER
+// ===============================
+
 const renderer = new THREE.WebGLRenderer({
-    antialias: true
+    antialias: true,
+    alpha: false
 });
 
 renderer.setSize(window.innerWidth, window.innerHeight);
+renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+
+renderer.setClearColor(0x050014, 1);
+
 document.body.appendChild(renderer.domElement);
 
-const starGeometry = new THREE.BufferGeometry();
-const starCount = 3000;
 
-const starVertices = [];
+// ===============================
+// ESTRELLAS
+// ===============================
+
+const starGeometry = new THREE.BufferGeometry();
+
+const starCount = 2500;
+const starPositions = [];
 
 for (let i = 0; i < starCount; i++) {
-    starVertices.push(
-        (Math.random() - 0.5) * 200,
-        (Math.random() - 0.5) * 200,
-        (Math.random() - 0.5) * 200
-    );
+
+    const radius = 30 + Math.random() * 70;
+
+    const theta = Math.random() * Math.PI * 2;
+
+    const x = Math.cos(theta) * radius;
+    const y = (Math.random() - 0.5) * 50;
+    const z = Math.sin(theta) * radius;
+
+    starPositions.push(x, y, z);
 }
 
 starGeometry.setAttribute(
-    "position",
-    new THREE.Float32BufferAttribute(starVertices, 3)
+    'position',
+    new THREE.Float32BufferAttribute(starPositions, 3)
 );
 
 const starMaterial = new THREE.PointsMaterial({
     color: 0xffffff,
-    size: 0.15
+    size: 0.09,
+    transparent: true,
+    opacity: 0.85
 });
 
-const stars = new THREE.Points(starGeometry, starMaterial);
+const stars = new THREE.Points(
+    starGeometry,
+    starMaterial
+);
+
 scene.add(stars);
 
-function createRing(radius, color) {
 
-    const geometry = new THREE.BufferGeometry();
+// ===============================
+// GALAXIA ESPIRAL
+// ===============================
 
-    const particles = 5000;
-    const positions = [];
+const galaxyGroup = new THREE.Group();
 
-    for (let i = 0; i < particles; i++) {
+scene.add(galaxyGroup);
 
-        const angle = Math.random() * Math.PI * 2;
+const galaxyGeometry = new THREE.BufferGeometry();
 
-        const r = radius + (Math.random() - 0.5) * 0.8;
+const galaxyPositions = [];
+const galaxyColors = [];
 
-        positions.push(
-            Math.cos(angle) * r,
-            (Math.random() - 0.5) * 0.2,
-            Math.sin(angle) * r
-        );
-    }
+const galaxyCount = 5000;
 
-    geometry.setAttribute(
-        'position',
-        new THREE.Float32BufferAttribute(positions, 3)
+const colorPurple = new THREE.Color(0xff00ff);
+const colorBlue = new THREE.Color(0x008cff);
+
+for (let i = 0; i < galaxyCount; i++) {
+
+    // Radio de la galaxia
+    const radius = Math.random() * 8;
+
+    // MUCHAS vueltas para formar espiral
+    const angle =
+        radius * 1.8 +
+        Math.random() * 0.6;
+
+    // Espesor de la galaxia
+    const spread = (Math.random() - 0.5) * 0.45;
+
+    const x =
+        Math.cos(angle) * radius +
+        spread;
+
+    const z =
+        Math.sin(angle) * radius +
+        spread;
+
+    // Galaxia ligeramente plana
+    const y =
+        (Math.random() - 0.5) *
+        (0.25 + radius * 0.035);
+
+    galaxyPositions.push(x, y, z);
+
+    // Mezcla morado / azul
+    const color =
+        i % 2 === 0
+            ? colorPurple
+            : colorBlue;
+
+    galaxyColors.push(
+        color.r,
+        color.g,
+        color.b
     );
-
-    const material = new THREE.PointsMaterial({
-        color,
-        size: 0.08
-    });
-
-    return new THREE.Points(geometry, material);
 }
 
-const ring1 = createRing(3, 0xff33ff);
-const ring2 = createRing(6, 0x66ccff);
-const ring3 = createRing(9, 0xffffff);
+galaxyGeometry.setAttribute(
+    'position',
+    new THREE.Float32BufferAttribute(
+        galaxyPositions,
+        3
+    )
+);
 
-scene.add(ring1);
-scene.add(ring2);
-scene.add(ring3);
+galaxyGeometry.setAttribute(
+    'color',
+    new THREE.Float32BufferAttribute(
+        galaxyColors,
+        3
+    )
+);
 
-const heartCanvas = document.createElement("canvas");
-heartCanvas.width = 512;
-heartCanvas.height = 512;
+const galaxyMaterial = new THREE.PointsMaterial({
 
-const ctx = heartCanvas.getContext("2d");
+    size: 0.065,
 
-ctx.fillStyle = "#ff55dd";
+    vertexColors: true,
 
-ctx.beginPath();
-ctx.moveTo(256, 350);
-ctx.bezierCurveTo(100, 220, 140, 60, 256, 140);
-ctx.bezierCurveTo(372, 60, 412, 220, 256, 350);
-ctx.fill();
+    transparent: true,
 
-const heartTexture = new THREE.CanvasTexture(heartCanvas);
+    opacity: 0.85,
 
-const heartMaterial = new THREE.SpriteMaterial({
-    map: heartTexture
+    blending: THREE.AdditiveBlending
 });
 
-const heart = new THREE.Sprite(heartMaterial);
+const galaxy = new THREE.Points(
+    galaxyGeometry,
+    galaxyMaterial
+);
 
-heart.scale.set(6, 6, 1);
+galaxyGroup.add(galaxy);
+
+
+// ===============================
+// CORAZÓN TRANSPARENTE
+// ===============================
+
+const heartShape = new THREE.Shape();
+
+heartShape.moveTo(0, -1.2);
+
+heartShape.bezierCurveTo(
+    -2.0, -2.8,
+    -4.0, 0.2,
+    -2.0, 1.5
+);
+
+heartShape.bezierCurveTo(
+    -1.0, 2.8,
+    0, 2.0,
+    0, 1.2
+);
+
+heartShape.bezierCurveTo(
+    0, 2.0,
+    1.0, 2.8,
+    2.0, 1.5
+);
+
+heartShape.bezierCurveTo(
+    4.0, 0.2,
+    2.0, -2.8,
+    0, -1.2
+);
+
+const heartGeometry =
+    new THREE.ShapeGeometry(
+        heartShape
+    );
+
+const heartMaterial =
+    new THREE.MeshBasicMaterial({
+
+        color: 0xff4cff,
+
+        transparent: true,
+
+        opacity: 0.20,
+
+        side: THREE.DoubleSide,
+
+        blending:
+            THREE.AdditiveBlending
+    });
+
+const heart =
+    new THREE.Mesh(
+        heartGeometry,
+        heartMaterial
+    );
+
+
+// CORAZÓN ARRIBA
+heart.position.set(
+    0,
+    2.4,
+    0
+);
+
+heart.scale.set(
+    0.75,
+    0.75,
+    0.75
+);
+
+heart.rotation.x =
+    THREE.MathUtils.degToRad(-10);
 
 scene.add(heart);
 
-const glowLight = new THREE.PointLight(0xff00ff, 50, 100);
 
-glowLight.position.set(0, 0, 0);
+// ===============================
+// BORDE DEL CORAZÓN
+// ===============================
 
-scene.add(glowLight);
+const heartEdges =
+    new THREE.EdgesGeometry(
+        heartGeometry
+    );
+
+const heartLine =
+    new THREE.LineSegments(
+        heartEdges,
+        new THREE.LineBasicMaterial({
+
+            color: 0xff66ff,
+
+            transparent: true,
+
+            opacity: 0.8,
+
+            blending:
+                THREE.AdditiveBlending
+        })
+    );
+
+heartLine.position.copy(
+    heart.position
+);
+
+heartLine.scale.copy(
+    heart.scale
+);
+
+heartLine.rotation.copy(
+    heart.rotation
+);
+
+scene.add(heartLine);
+
+
+// ===============================
+// TEXTO 3D
+// ===============================
+
+function crearTexto(
+    texto,
+    posicion,
+    rotacion,
+    escala = 1
+) {
+
+    const canvas =
+        document.createElement('canvas');
+
+    canvas.width = 1024;
+    canvas.height = 256;
+
+    const ctx =
+        canvas.getContext('2d');
+
+    ctx.clearRect(
+        0,
+        0,
+        canvas.width,
+        canvas.height
+    );
+
+    ctx.font =
+        'bold 95px Arial';
+
+    ctx.fillStyle =
+        '#ffffff';
+
+    ctx.shadowColor =
+        '#00aaff';
+
+    ctx.shadowBlur = 25;
+
+    ctx.textAlign =
+        'center';
+
+    ctx.textBaseline =
+        'middle';
+
+    ctx.fillText(
+        texto,
+        canvas.width / 2,
+        canvas.height / 2
+    );
+
+    const texture =
+        new THREE.CanvasTexture(canvas);
+
+    texture.needsUpdate = true;
+
+    const material =
+        new THREE.SpriteMaterial({
+
+            map: texture,
+
+            transparent: true,
+
+            blending:
+                THREE.AdditiveBlending
+        });
+
+    const sprite =
+        new THREE.Sprite(material);
+
+    sprite.position.set(
+        posicion.x,
+        posicion.y,
+        posicion.z
+    );
+
+    sprite.rotation.z =
+        rotacion;
+
+    sprite.scale.set(
+        5 * escala,
+        1.25 * escala,
+        1
+    );
+
+    scene.add(sprite);
+
+    return sprite;
+}
+
+
+// ===============================
+// TE ADORO
+// ===============================
+
+const teAdoro =
+    crearTexto(
+        'TE ADORO ♥️',
+        {
+            x: -7,
+            y: 2.2,
+            z: 0
+        },
+        THREE.MathUtils.degToRad(15),
+        0.9
+    );
+
+
+// ===============================
+// TE AMO
+// ===============================
+
+const teAmo =
+    crearTexto(
+        'TE AMO ♥️',
+        {
+            x: 7,
+            y: 2.2,
+            z: 0
+        },
+        THREE.MathUtils.degToRad(-15),
+        0.9
+    );
+
+
+// ===============================
+// ANIMACIÓN
+// ===============================
 
 function animate() {
 
-    requestAnimationFrame(animate);
+    requestAnimationFrame(
+        animate
+    );
 
-    ring1.rotation.y += 0.004;
-    ring2.rotation.y -= 0.002;
-    ring3.rotation.y += 0.001;
+    // Galaxia gira lentamente
+    galaxyGroup.rotation.y += 0.0018;
 
-    heart.material.rotation += 0.002;
+    // Estrellas movimiento suave
+    stars.rotation.y += 0.00025;
 
-    renderer.render(scene, camera);
+    // Corazón flotando
+    const tiempo =
+        performance.now() * 0.001;
+
+    heart.position.y =
+        2.4 +
+        Math.sin(tiempo * 1.5) * 0.12;
+
+    heartLine.position.y =
+        heart.position.y;
+
+    // Pulso del corazón
+    const pulso =
+        0.75 +
+        Math.sin(tiempo * 2) * 0.04;
+
+    heart.scale.set(
+        pulso,
+        pulso,
+        pulso
+    );
+
+    heartLine.scale.set(
+        pulso,
+        pulso,
+        pulso
+    );
+
+    renderer.render(
+        scene,
+        camera
+    );
 }
 
 animate();
 
-window.addEventListener("resize", () => {
 
-    camera.aspect =
-        window.innerWidth / window.innerHeight;
+// ===============================
+// RESPONSIVE
+// ===============================
 
-    camera.updateProjectionMatrix();
+window.addEventListener(
+    'resize',
+    () => {
 
-    renderer.setSize(
-        window.innerWidth,
-        window.innerHeight
-    );
-});
+        camera.aspect =
+            window.innerWidth /
+            window.innerHeight;
+
+        camera.updateProjectionMatrix();
+
+        renderer.setSize(
+            window.innerWidth,
+            window.innerHeight
+        );
+    }
+);
