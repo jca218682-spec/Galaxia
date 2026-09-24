@@ -1,1 +1,30 @@
+body {
+    margin: 0;
+    overflow: hidden;
+    background: #000;
+    font-family: cursive;
+}
 
+#overlay {
+    position: absolute;
+    top: 5%;
+    width: 100%;
+    text-align: center;
+    z-index: 10;
+}
+
+h1 {
+    color: #ffd1ff;
+    font-size: 4rem;
+    margin: 0;
+    text-shadow:
+        0 0 10px #ff00ff,
+        0 0 20px #ff00ff,
+        0 0 40px #ff00ff;
+}
+
+p {
+    color: white;
+    font-size: 1.5rem;
+    text-shadow: 0 0 10px #fff;
+}
