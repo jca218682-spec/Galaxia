@@ -488,12 +488,128 @@ scene.add(heartGlow);
 // 💖 PALABRAS DE LA GALAXIA
 // =====================================================
 
+// Crear texto como Sprite
+function crearTexto(texto, colorTexto = '#8eeaff') {
+
+    const canvas = document.createElement('canvas');
+
+    canvas.width = 1000;
+    canvas.height = 220;
+
+    const ctx = canvas.getContext('2d');
+
+    ctx.clearRect(
+        0,
+        0,
+        canvas.width,
+        canvas.height
+    );
+
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+
+    // Sombra / brillo
+    ctx.shadowColor = '#00d9ff';
+    ctx.shadowBlur = 18;
+
+    // Texto
+    ctx.font = 'bold 58px Arial';
+
+    const partes = texto.split(' ♥ ');
+
+    if (partes.length === 2) {
+
+        // Texto
+        ctx.fillStyle = colorTexto;
+
+        ctx.fillText(
+            partes[0],
+            455,
+            110
+        );
+
+        // Corazón rosa
+        ctx.shadowColor = '#ff4dff';
+        ctx.shadowBlur = 22;
+
+        ctx.fillStyle = '#ff69ff';
+
+        ctx.fillText(
+            '♥',
+            650,
+            110
+        );
+
+    } else {
+
+        ctx.fillStyle = colorTexto;
+
+        ctx.fillText(
+            texto,
+            500,
+            110
+        );
+    }
+
+
+    const texture =
+        new THREE.CanvasTexture(canvas);
+
+    texture.needsUpdate = true;
+
+    const material =
+        new THREE.SpriteMaterial({
+
+            map: texture,
+
+            transparent: true,
+
+            depthWrite: false,
+
+            depthTest: false
+        });
+
+    const sprite =
+        new THREE.Sprite(material);
+
+    return sprite;
+}
 
 
 // =====================================================
-// 🌌 HACER QUE TODOS GIRen CON LA GALAXIA
+// CREAR LAS PALABRAS
 // =====================================================
 
+const teAdoro =
+    crearTexto('TE ADORO ♥');
+
+const teAmo =
+    crearTexto('TE AMO ♥');
+
+const miUniverso =
+    crearTexto('MI UNIVERSO ♥');
+
+const amorInfinito =
+    crearTexto('AMOR INFINITO ♥');
+
+const miVida =
+    crearTexto('MI VIDA ♥');
+
+
+// =====================================================
+// AGREGAR A LA GALAXIA
+// =====================================================
+
+// IMPORTANTE:
+// Al ser hijos de galaxyGroup,
+// las palabras girarán junto con la galaxia.
+
+galaxyGroup.add(teAdoro);
+galaxyGroup.add(teAmo);
+
+galaxyGroup.add(miUniverso);
+galaxyGroup.add(amorInfinito);
+galaxyGroup.add(miVida);
 
 
 // =====================================================
@@ -505,49 +621,98 @@ function acomodarTextos() {
     const mobile =
         window.innerWidth < 600;
 
+
     if (mobile) {
 
+        // TE ADORO
         teAdoro.position.set(
             -4.4,
             1.1,
             1
         );
 
+        teAdoro.scale.set(
+            2.7,
+            0.60,
+            1
+        );
+
+
+        // TE AMO
         teAmo.position.set(
             4.4,
             1.1,
             1
         );
 
-        teAdoro.scale.set(
-            2.7,
-            0.60,
-            1
-        );
-
         teAmo.scale.set(
             2.7,
             0.60,
             1
         );
 
+
+        // MI UNIVERSO
+        miUniverso.position.set(
+            -4.0,
+            -0.4,
+            1.2
+        );
+
+        miUniverso.scale.set(
+            2.8,
+            0.62,
+            1
+        );
+
+
+        // AMOR INFINITO
+        amorInfinito.position.set(
+            4.0,
+            -1.3,
+            1.2
+        );
+
+        amorInfinito.scale.set(
+            3.0,
+            0.62,
+            1
+        );
+
+
+        // MI VIDA
+        miVida.position.set(
+            0,
+            -2.5,
+            1.3
+        );
+
+        miVida.scale.set(
+            2.5,
+            0.62,
+            1
+        );
+
     } else {
 
+        // TE ADORO
         teAdoro.position.set(
             -7,
             1.0,
             1
         );
 
-        teAmo.position.set(
-            7,
-            1.0,
-            1
-        );
-
         teAdoro.scale.set(
             3.8,
             0.85,
+            1
+        );
+
+
+        // TE AMO
+        teAmo.position.set(
+            7,
+            1.0,
             1
         );
 
@@ -556,76 +721,53 @@ function acomodarTextos() {
             0.85,
             1
         );
+
+
+        // MI UNIVERSO
+        miUniverso.position.set(
+            -5.5,
+            -0.3,
+            1.2
+        );
+
+        miUniverso.scale.set(
+            3.5,
+            0.80,
+            1
+        );
+
+
+        // AMOR INFINITO
+        amorInfinito.position.set(
+            5.5,
+            -1.5,
+            1.2
+        );
+
+        amorInfinito.scale.set(
+            3.8,
+            0.80,
+            1
+        );
+
+
+        // MI VIDA
+        miVida.position.set(
+            0,
+            -2.7,
+            1.3
+        );
+
+        miVida.scale.set(
+            3.2,
+            0.80,
+            1
+        );
     }
 }
 
+// Ejecutar posiciones
 acomodarTextos();
-
-galaxyGroup.add(teAdoro);
-galaxyGroup.add(teAmo);
-
-// =====================================================
-// ANIMACIÓN
-// =====================================================
-
-function animate() {
-
-    requestAnimationFrame(
-        animate
-    );
-
-    const tiempo =
-        performance.now() * 0.001;
-
-
-    // Galaxia girando
-    galaxyGroup.rotation.y +=
-        0.0015;
-
-
-    // Estrellas
-    stars.rotation.y +=
-        0.00015;
-
-
-    // Corazón flotando
-    heart.position.y =
-        2.2 +
-        Math.sin(tiempo * 1.5) *
-        0.10;
-
-
-    heartGlow.position.y =
-        heart.position.y;
-
-
-    // Pulso
-    const pulso =
-        1.35 +
-        Math.sin(tiempo * 2.2) *
-        0.035;
-
-    heart.scale.set(
-        pulso,
-        pulso,
-        pulso
-    );
-
-    heartGlow.scale.set(
-        pulso,
-        pulso,
-        pulso
-    );
-
-
-    renderer.render(
-        scene,
-        camera
-    );
-}
-
-animate();
-
 
 // =====================================================
 // RESPONSIVE
