@@ -494,12 +494,7 @@ scene.add(heartGlow);
 // 🌌 HACER QUE TODOS GIRen CON LA GALAXIA
 // =====================================================
 
-galaxyGroup.add(textoTeAdoro);
-galaxyGroup.add(textoTeAmo);
 
-galaxyGroup.add(textoMiUniverso);
-galaxyGroup.add(textoAmorInfinito);
-galaxyGroup.add(textoMiVida);
 
 // =====================================================
 // POSICIÓN RESPONSIVA
