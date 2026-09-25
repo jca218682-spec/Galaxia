@@ -488,48 +488,6 @@ scene.add(heartGlow);
 // 💖 PALABRAS DE LA GALAXIA
 // =====================================================
 
-// TE ADORO
-const textoTeAdoro = crearTexto(
-    'TE ADORO ♥',
-    { x: -7, y: 2.2, z: 0 },
-    degToRad(15),
-    0.9
-);
-
-// TE AMO
-const textoTeAmo = crearTexto(
-    'TE AMO ♥',
-    { x: 7, y: 2.2, z: 0 },
-    degToRad(-15),
-    0.9
-);
-
-
-// MI UNIVERSO
-const textoMiUniverso = crearTexto(
-    'MI UNIVERSO ♥',
-    { x: -6.2, y: -0.8, z: 0 },
-    degToRad(10),
-    0.85
-);
-
-
-// AMOR INFINITO
-const textoAmorInfinito = crearTexto(
-    'AMOR INFINITO ♥',
-    { x: 5.8, y: -1.8, z: 0 },
-    degToRad(-10),
-    0.85
-);
-
-
-// MI VIDA
-const textoMiVida = crearTexto(
-    'MI VIDA ♥',
-    { x: 0, y: -2.7, z: 0 },
-    0,
-    0.85
-);
 
 
 // =====================================================
