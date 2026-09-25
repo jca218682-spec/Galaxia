@@ -561,9 +561,8 @@ function acomodarTextos() {
 
 acomodarTextos();
 
-scene.add(teAdoro);
-scene.add(teAmo);
-
+galaxyGroup.add(teAdoro);
+galaxyGroup.add(teAmo);
 
 // =====================================================
 // ANIMACIÓN
