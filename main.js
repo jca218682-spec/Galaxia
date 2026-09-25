@@ -485,84 +485,63 @@ heartGlow.renderOrder = 19;
 
 scene.add(heartGlow);
 // =====================================================
-// TEXTOS TE ADORO / TE AMO
+// 💖 PALABRAS DE LA GALAXIA
 // =====================================================
 
-function crearTexto(texto) {
+// TE ADORO
+const textoTeAdoro = crearTexto(
+    'TE ADORO ♥',
+    { x: -7, y: 2.2, z: 0 },
+    degToRad(15),
+    0.9
+);
 
-    const canvas =
-        document.createElement('canvas');
-
-    canvas.width = 1000;
-    canvas.height = 220;
-
-    const ctx =
-        canvas.getContext('2d');
-
-    ctx.clearRect(
-        0,
-        0,
-        canvas.width,
-        canvas.height
-    );
-
-    ctx.font =
-        'bold 78px Arial';
-
-    ctx.textAlign =
-        'center';
-
-    ctx.textBaseline =
-        'middle';
-
-    ctx.fillStyle =
-        '#ffffff';
-
-    ctx.shadowColor =
-        '#008cff';
-
-    ctx.shadowBlur = 22;
-
-    ctx.fillText(
-        texto,
-        500,
-        110
-    );
-
-    const texture =
-        new THREE.CanvasTexture(
-            canvas
-        );
-
-    const material =
-        new THREE.SpriteMaterial({
-
-            map: texture,
-
-            transparent: true,
-
-            depthTest: false
-        });
-
-    const sprite =
-        new THREE.Sprite(
-            material
-        );
-
-    return sprite;
-}
+// TE AMO
+const textoTeAmo = crearTexto(
+    'TE AMO ♥',
+    { x: 7, y: 2.2, z: 0 },
+    degToRad(-15),
+    0.9
+);
 
 
-const teAdoro =
-    crearTexto(
-        'TE ADORO ♥️'
-    );
+// MI UNIVERSO
+const textoMiUniverso = crearTexto(
+    'MI UNIVERSO ♥',
+    { x: -6.2, y: -0.8, z: 0 },
+    degToRad(10),
+    0.85
+);
 
-const teAmo =
-    crearTexto(
-        'TE AMO ♥️'
-    );
 
+// AMOR INFINITO
+const textoAmorInfinito = crearTexto(
+    'AMOR INFINITO ♥',
+    { x: 5.8, y: -1.8, z: 0 },
+    degToRad(-10),
+    0.85
+);
+
+
+// MI VIDA
+const textoMiVida = crearTexto(
+    'MI VIDA ♥',
+    { x: 0, y: -2.7, z: 0 },
+    0,
+    0.85
+);
+
+
+// =====================================================
+// 🌌 HACER QUE TODOS GIRen CON LA GALAXIA
+// =====================================================
+
+galaxyGroup.add(textoTeAdoro);
+galaxyGroup.add(textoTeAmo);
+
+galaxyGroup.add(textoMiUniverso);
+galaxyGroup.add(textoAmorInfinito);
+galaxyGroup.add(textoMiVida);
 
 // =====================================================
 // POSICIÓN RESPONSIVA
