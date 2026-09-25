@@ -365,9 +365,9 @@ heart.position.set(
 
 // TAMAÑO
 heart.scale.set(
-    1.35,
-    1.35,
-    1.35
+    0.81,
+    0.81,
+    0.81
 );
 
 
