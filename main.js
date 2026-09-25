@@ -212,24 +212,26 @@ galaxyGroup.add(galaxy);
 
 
 // =====================================================
-// CORAZÓN REAL DE PARTÍCULAS
+// ❤️ CORAZÓN DE PARTÍCULAS — MÁS VISIBLE Y AL FRENTE
 // =====================================================
 
-const heartGeometry =
-    new THREE.BufferGeometry();
+const heartGeometry = new THREE.BufferGeometry();
 
 const heartPositions = [];
-
 const heartColors = [];
 
-const heartParticles = 1800;
+const heartParticles = 3200;
 
 
-// Fórmula matemática de corazón
+// =====================================================
+// FÓRMULA DEL CORAZÓN
+// =====================================================
+
 function heartX(t) {
 
     return 16 *
         Math.pow(Math.sin(t), 3);
+
 }
 
 function heartY(t) {
@@ -240,8 +242,13 @@ function heartY(t) {
         2 * Math.cos(3 * t) -
         Math.cos(4 * t)
     );
+
 }
 
+
+// =====================================================
+// CREAR PARTÍCULAS
+// =====================================================
 
 for (let i = 0; i < heartParticles; i++) {
 
@@ -261,13 +268,16 @@ for (let i = 0; i < heartParticles; i++) {
         heartY(t) *
         interior;
 
-    // Escala
+
+    // Tamaño del corazón
     x *= 0.20;
     y *= 0.20;
 
-    // pequeña variación
-    x += (Math.random() - 0.5) * 0.035;
-    y += (Math.random() - 0.5) * 0.035;
+
+    // Pequeña variación
+    x += (Math.random() - 0.5) * 0.045;
+    y += (Math.random() - 0.5) * 0.045;
+
 
     heartPositions.push(
         x,
@@ -276,12 +286,19 @@ for (let i = 0; i < heartParticles; i++) {
     );
 
 
+    // Rosa / magenta brillante
     heartColors.push(
         1,
-        0.15 + Math.random() * 0.3,
-        1
+        0.08 + Math.random() * 0.22,
+        0.95 + Math.random() * 0.05
     );
+
 }
+
+
+// =====================================================
+// ATRIBUTOS
+// =====================================================
 
 heartGeometry.setAttribute(
     'position',
@@ -300,21 +317,32 @@ heartGeometry.setAttribute(
 );
 
 
+// =====================================================
+// MATERIAL DEL CORAZÓN
+// =====================================================
+
 const heartMaterial =
     new THREE.PointsMaterial({
 
-        size: 0.045,
+        size: 0.065,
 
         vertexColors: true,
 
         transparent: true,
 
-        opacity: 0.48,
+        opacity: 0.95,
+
+        depthWrite: false,
 
         blending:
             THREE.AdditiveBlending
+
     });
 
+
+// =====================================================
+// CORAZÓN
+// =====================================================
 
 const heart =
     new THREE.Points(
@@ -323,24 +351,35 @@ const heart =
     );
 
 
-// CORAZÓN ARRIBA DE LA GALAXIA
+// =====================================================
+// ❤️ POSICIÓN
+// =====================================================
+
+// MÁS ARRIBA
 heart.position.set(
     0,
     2.2,
-    0
+    1.8
 );
 
+
+// TAMAÑO
 heart.scale.set(
     1.35,
     1.35,
     1.35
 );
 
+
+// IMPORTANTE:
+// lo ponemos al frente de la galaxia
+heart.renderOrder = 20;
+
 scene.add(heart);
 
 
 // =====================================================
-// RESPLANDOR DEL CORAZÓN
+// ✨ RESPLANDOR DEL CORAZÓN
 // =====================================================
 
 const heartGlowGeometry =
@@ -348,32 +387,40 @@ const heartGlowGeometry =
 
 const glowPositions = [];
 
-for (let i = 0; i < 500; i++) {
+
+// Más partículas para que se note el brillo
+for (let i = 0; i < 900; i++) {
 
     const t =
         Math.random() *
         Math.PI * 2;
 
+
     const scale =
-        0.95 +
-        Math.random() * 0.35;
+        0.92 +
+        Math.random() * 0.42;
+
 
     const x =
         heartX(t) *
         0.20 *
         scale;
 
+
     const y =
         heartY(t) *
         0.20 *
         scale;
 
+
     glowPositions.push(
         x,
         y,
-        -0.05
+        0
     );
+
 }
+
 
 heartGlowGeometry.setAttribute(
     'position',
@@ -383,20 +430,33 @@ heartGlowGeometry.setAttribute(
     )
 );
 
+
+// =====================================================
+// MATERIAL DEL RESPLANDOR
+// =====================================================
+
 const glowMaterial =
     new THREE.PointsMaterial({
 
-        color: 0xff55ff,
+        color: 0xff22ff,
 
-        size: 0.025,
+        size: 0.055,
 
         transparent: true,
 
-        opacity: 0.25,
+        opacity: 0.55,
+
+        depthWrite: false,
 
         blending:
             THREE.AdditiveBlending
+
     });
+
+
+// =====================================================
+// RESPLANDOR
+// =====================================================
 
 const heartGlow =
     new THREE.Points(
@@ -404,17 +464,26 @@ const heartGlow =
         glowMaterial
     );
 
+
+// MISMA POSICIÓN DEL CORAZÓN
 heartGlow.position.copy(
     heart.position
 );
 
+
+// MISMO TAMAÑO
 heartGlow.scale.copy(
     heart.scale
 );
 
+
+// Un poquito detrás del corazón
+heartGlow.position.z -= 0.08;
+
+heartGlow.renderOrder = 19;
+
+
 scene.add(heartGlow);
-
-
 // =====================================================
 // TEXTOS TE ADORO / TE AMO
 // =====================================================
